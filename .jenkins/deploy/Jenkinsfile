@@ -14,7 +14,7 @@ pipeline {
                 not {
                     anyOf {
                         buildingTag();
-                        branch 'main';
+                        branch 'master';
                     }
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
                         error "Failed to extract owner and repo from GIT_URL"
                     }
                     // When building the main branch, use the 'latest' tag
-                    env.DYNAMIC_TAG_NAME = env.GIT_BRANCH == 'main' ? 'latest' : env.TAG_NAME
+                    env.DYNAMIC_TAG_NAME = env.GIT_BRANCH == 'master' ? 'latest' : env.TAG_NAME
                     env.GHCR_REPOSITORY = "${env.GITHUB_REPOSITORY_OWNER}/${env.GITHUB_REPOSITORY_NAME}".toLowerCase()
                     env.LABEL_ORG_OPENCONTAINERS_IMAGE_SOURCE = "https://github.com/${env.GITHUB_REPOSITORY_OWNER}/${env.GITHUB_REPOSITORY_NAME}"
                 }
