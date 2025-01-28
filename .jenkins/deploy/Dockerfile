@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/oss/go/microsoft/golang:1.22-fips-bullseye AS conjur-cli-go-builder
 
 ENV VERSION=""
+ENV GO111MODULE='auto'
 
 COPY ./bin/builder_entrypoint.sh ./builder_entrypoint.sh
 RUN chmod +x ./builder_entrypoint.sh
