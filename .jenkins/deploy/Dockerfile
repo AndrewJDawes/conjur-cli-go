@@ -1,19 +1,20 @@
 FROM mcr.microsoft.com/oss/go/microsoft/golang:1.22-fips-bullseye AS conjur-cli-go-builder
 
 ENV VERSION=""
-ENV GO111MODULE='auto'
+ARG ARCH="arm64"
 
-COPY ./bin/builder_entrypoint.sh ./builder_entrypoint.sh
-RUN chmod +x ./builder_entrypoint.sh
+COPY . /github.com/cyberark/conjur-cli-go
 
-COPY . .
+WORKDIR /github.com/cyberark/conjur-cli-go
 
-RUN ls -la
-
-RUN ./builder_entrypoint.sh
+RUN chmod +x .jenkins/deploy/builder_entrypoint.sh
+RUN ./.jenkins/deploy/builder_entrypoint.sh
 
 FROM alpine:3.21 AS conjur-cli-go
 
-COPY --from=conjur-cli-go-builder /usr/local/bin/conjur /usr/local/bin/conjur
+# Required to add dynamically linked libraries for conjur-cli-go
+RUN apk add libc6-compat
+
+COPY --from=conjur-cli-go-builder /github.com/cyberark/conjur-cli-go/dist/conjur /usr/local/bin/conjur
 
 ENTRYPOINT ["/usr/local/bin/conjur"]
